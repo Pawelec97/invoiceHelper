@@ -14,8 +14,7 @@ public class InvoiceItem {
     @Column(name = "model")
     private String model;
 
-    @OneToMany(mappedBy = "invoiceItem", cascade = CascadeType.ALL)
-    private List<Order> orders;
+
 
 //    @ManyToMany
 //    @JoinTable(
@@ -28,24 +27,16 @@ public class InvoiceItem {
     public InvoiceItem() {
     }
 
-    public InvoiceItem(String model, List<Order> orders) {
-        this.model = model;
-        this.orders.addAll(orders);
-    }
-
-    public InvoiceItem(long id, String model, List<Order> orders) {
+    public InvoiceItem(long id, String model) {
         this.id = id;
         this.model = model;
-        this.orders = orders;
     }
 
-    public List<Order> getOrders() {
-        return orders;
+    public InvoiceItem(String model) {
+        this.model = model;
+
     }
 
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
 
     public long getId() {
         return id;

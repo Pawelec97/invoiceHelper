@@ -23,7 +23,10 @@ public class Invoice {
     private Supplier supplier;
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
+    @Column(name = "order")
     private List<Order> orders;
+
+
 
     public Invoice(){
     }
@@ -37,6 +40,14 @@ public class Invoice {
         this.invoiceNo = invoiceNo;
         this.creationDate = creationDate;
         this.supplier = supplier;
+        this.orders = orders;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
         this.orders = orders;
     }
 
@@ -64,11 +75,4 @@ public class Invoice {
         this.supplier = supplier;
     }
 
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
 }

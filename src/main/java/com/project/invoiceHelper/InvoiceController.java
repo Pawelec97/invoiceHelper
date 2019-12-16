@@ -61,7 +61,12 @@ public class InvoiceController {
         for (Invoice invoice: invoices){
             List<InvoiceItemDto> itemsDto = new ArrayList<>();
             for(Order order: invoice.getOrders()){
-                itemsDto.add(new InvoiceItemDto( order.getInvoiceItem().getId(), order.getInvoiceItem().getModel(), order.getQuantity(), order.getPrice()));
+                Optional<InvoiceItem> itemOptional = invoiceItemRepository.findById(order.getInvoiceItem().getId()); // szukam
+                if(itemOptional.isPresent())
+                {
+                    InvoiceItem item = itemOptional.get();
+                    itemsDto.add(new InvoiceItemDto(item.getId(), item.getModel(), order.getQuantity(), order.getPrice()));
+                }
             }
 
             invoicesDto.add(new InvoiceWithOrdersDto(invoice.getInvoiceNo(), invoice.getCreationDate(),
@@ -99,8 +104,7 @@ public class InvoiceController {
 
         List<Order> orders = new ArrayList<>();
         for(InvoiceItemDtoAddInvoice invoiceItemDto: invoiceDto.getItems()){ //dla każdego podanego itemu
-            Optional<InvoiceItem> item = invoiceItemRepository.findAll().stream()
-                    .filter(e -> e.getId() == invoiceItemDto.getId()).findFirst();
+            Optional<InvoiceItem> item = invoiceItemRepository.findById(invoiceItemDto.getId());
             if(item.isPresent()){
                 orders.add(new Order(invoiceItemDto.getQuantity(), invoiceItemDto.getPrice(), item.get())); //tworze zamowienie bez podanej faktury
             }else
@@ -111,9 +115,7 @@ public class InvoiceController {
 //         Optional<List<Order>> orders= invoiceItemRepository.findAll().stream()
 //                .filter(e -> invoiceDto.getInvoiceItemIds().)
 
-        Optional<Supplier> supplier = supplierRepository.findAll().stream()
-                .filter(element -> element.getId() == invoiceDto.getSupplier())
-                .findFirst();
+        Optional<Supplier> supplier = supplierRepository.findById(invoiceDto.getSupplier());
 
 
         if(supplier.isPresent()){

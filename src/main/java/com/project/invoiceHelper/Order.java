@@ -19,30 +19,33 @@ public class Order {
     @Column(name = "price")
     private BigDecimal price;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "invoiceNo")
-    private Invoice invoice;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "invoiceItemId")
     private InvoiceItem invoiceItem;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "invoiceINo")
+    private Invoice invoice;
 
 
     public Order (){
     }
 
 
-    public Order(long quantity, BigDecimal price, Invoice invoice, InvoiceItem invoiceItem) {
-        this.quantity = quantity;
-        this.price = price;
-        this.invoice = invoice;
-        this.invoiceItem = invoiceItem;
-    }
 
     public Order(long quantity, BigDecimal price, InvoiceItem invoiceItem) {
         this.quantity = quantity;
         this.price = price;
         this.invoiceItem = invoiceItem;
+    }
+
+    public Invoice getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
     }
 
     public BigDecimal getPrice() {
@@ -67,14 +70,6 @@ public class Order {
 
     public void setOrderNo(long orderNo) {
         this.orderNo = orderNo;
-    }
-
-    public Invoice getInvoice() {
-        return invoice;
-    }
-
-    public void setInvoice(Invoice invoice) {
-        this.invoice = invoice;
     }
 
     public InvoiceItem getInvoiceItem() {
