@@ -43,6 +43,17 @@ public class InvoiceController {
 ////        return invoicesDto;
 ////    }
 
+
+    public InvoiceController() {
+    }
+
+    public InvoiceController(InvoiceRepository invoiceRepository, SupplierRepository supplierRepository, InvoiceItemRepository invoiceItemRepository, OrderRepository orderRepository) {
+        this.invoiceRepository = invoiceRepository;
+        this.supplierRepository = supplierRepository;
+        this.invoiceItemRepository = invoiceItemRepository;
+        this.orderRepository = orderRepository;
+    }
+
     @GetMapping("/invoices")
     public List<InvoiceWithOrdersDto> findAll(){
         List<Invoice> invoices = invoiceRepository.findAll();
