@@ -1,5 +1,6 @@
-package com.project.invoiceHelper;
+package com.project.invoiceHelper.repositories;
 
+import com.project.invoiceHelper.Invoice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,17 +1,18 @@
-package com.project.invoiceHelper;
+package com.project.invoiceHelper.dto;
 
 import java.time.LocalDate;
 
-public class InvoiceDtoSupplierId {
+public class InvoiceDto {
     private long invoiceNo;
     private LocalDate creationDate;
-    private long supplierId;
+    private SupplierDto supplier;
 
-    public InvoiceDtoSupplierId(long invoiceNo, LocalDate creationDate, long supplierId) {
+    public InvoiceDto(long invoiceNo, LocalDate creationDate, SupplierDto supplier) {
         this.invoiceNo = invoiceNo;
         this.creationDate = creationDate;
-        this.supplierId = supplierId;
+        this.supplier = supplier;
     }
+
 
     public long getInvoiceNo() {
         return invoiceNo;
@@ -29,11 +30,11 @@ public class InvoiceDtoSupplierId {
         this.creationDate = creationDate;
     }
 
-    public long getSupplierId() {
-        return supplierId;
+    public SupplierDto getSupplier() {
+        return supplier;
     }
 
-    public void setSupplierId(long supplierId) {
-        this.supplierId = supplierId;
+    public void setSupplier(SupplierDto supplierDto) {
+        this.supplier = supplierDto;
     }
 }

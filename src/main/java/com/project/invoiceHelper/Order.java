@@ -1,10 +1,10 @@
 package com.project.invoiceHelper;
 
+import jdk.nashorn.internal.objects.annotations.Setter;
 import org.hibernate.annotations.Generated;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-
 @Entity
 @Table(name = "orders")
 public class Order {

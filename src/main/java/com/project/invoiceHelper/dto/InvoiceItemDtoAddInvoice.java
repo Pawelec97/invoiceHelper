@@ -1,4 +1,4 @@
-package com.project.invoiceHelper;
+package com.project.invoiceHelper.dto;
 
 import java.math.BigDecimal;
 

@@ -1,4 +1,7 @@
-package com.project.invoiceHelper;
+package com.project.invoiceHelper.dto;
+
+import com.project.invoiceHelper.dto.InvoiceItemDto;
+import com.project.invoiceHelper.dto.SupplierDto;
 
 import java.time.LocalDate;
 import java.util.List;
