@@ -5,12 +5,16 @@ import com.project.invoiceHelper.repositories.InvoiceItemRepository;
 import com.project.invoiceHelper.repositories.InvoiceRepository;
 import com.project.invoiceHelper.repositories.OrderRepository;
 import com.project.invoiceHelper.repositories.SupplierRepository;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -60,8 +64,9 @@ public class InvoiceController {
     }
 
     @GetMapping("/invoices")
-    public List<InvoiceWithOrdersDto> findAll(){
-        List<Invoice> invoices = invoiceRepository.findAll();
+    public List<InvoiceWithOrdersDto> findAll(@RequestParam("page") int page,
+                                              @RequestParam("size") int size){
+        List<Invoice> invoices = invoiceRepository.findAll(PageRequest.of(page, size)).getContent();
         List<InvoiceWithOrdersDto> invoicesDto = new ArrayList<>();
         for (Invoice invoice: invoices){
             List<InvoiceItemDto> itemsDto = new ArrayList<>();
