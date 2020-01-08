@@ -9,13 +9,19 @@ import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
-import java.awt.print.Pageable;
+import java.text.DateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,27 +38,6 @@ public class InvoiceController {
     @Autowired
     OrderRepository orderRepository;
 
-  /*  @RequestMapping("/invoicestest")
-    public Invoice invoiceTest() {
-
-        InvoiceItem[] items = {new InvoiceItem(3,15.5,"model",12)};
-
-        return new Invoice(31, 13);
-    }*/
-
-
-//    @GetMapping("/invoices")
-////    public List<InvoiceDto> findAll(){
-////        List<Invoice> invoices = invoiceRepository.findAll();
-////        List<InvoiceDto> invoicesDto = new ArrayList<>();
-////        for (Invoice invoice: invoices){
-////            invoicesDto.add(new InvoiceDto(invoice.getInvoiceNo(), invoice.getCreationDate(),
-////                    new SupplierDto(invoice.getSupplier().getId(),invoice.getSupplier().getName(),invoice.getSupplier().getAddress())));
-////        }
-////        return invoicesDto;
-////    }
-
-
     public InvoiceController() {
     }
 
@@ -64,9 +49,34 @@ public class InvoiceController {
     }
 
     @GetMapping("/invoices")
+    public List<InvoiceWithOrdersDto> findAll(){
+        List<Invoice> invoices = invoiceRepository.findAll();
+        List<InvoiceWithOrdersDto> invoicesDto = new ArrayList<>();
+        for (Invoice invoice: invoices){
+            List<InvoiceItemDto> itemsDto = new ArrayList<>();
+            for(Order order: invoice.getOrders()){
+                Optional<InvoiceItem> itemOptional = invoiceItemRepository.findById(order.getInvoiceItem().getId()); // szukam
+                if(itemOptional.isPresent())
+                {
+                    InvoiceItem item = itemOptional.get();
+                    itemsDto.add(new InvoiceItemDto(item.getId(), item.getModel(), order.getQuantity(), order.getPrice()));
+                }
+            }
+
+            invoicesDto.add(new InvoiceWithOrdersDto(invoice.getInvoiceNo(), invoice.getCreationDate(),
+                    new SupplierDto(invoice.getSupplier().getId(),invoice.getSupplier().getName(),invoice.getSupplier().getAddress()),
+                    itemsDto));
+        }
+        return invoicesDto;
+    }
+
+    @GetMapping("/invoicesPages")
     public List<InvoiceWithOrdersDto> findAll(@RequestParam("page") int page,
-                                              @RequestParam("size") int size){
-        List<Invoice> invoices = invoiceRepository.findAll(PageRequest.of(page, size)).getContent();
+                                              @RequestParam("size") int size,
+                                              @RequestParam("supplierId") Long supplierId,
+                                              @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-DD") LocalDate startDate,
+                                              @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-DD") LocalDate endDate){
+        List<Invoice> invoices = invoiceRepository.findBySupplierIdAndCreationDateBetween(supplierId, startDate, endDate, PageRequest.of(page, size)).getContent();
         List<InvoiceWithOrdersDto> invoicesDto = new ArrayList<>();
         for (Invoice invoice: invoices){
             List<InvoiceItemDto> itemsDto = new ArrayList<>();
