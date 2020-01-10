@@ -64,10 +64,24 @@ public class Test111 {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].invoiceNo").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].invoiceNo").isNotEmpty()); // dokoncz jsona
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].invoiceNo").isNotEmpty());
 
     }
 
+//    @Test
+//    public void test_getInvoiceById throws Exception {
+//        InvoiceItem item = new InvoiceItem(1, "myszka");
+//        Order order = new Order(1, new BigDecimal("20"), item);
+//        Invoice invoice = new Invoice(1, LocalDate.now(), new Supplier(1, "pasda", "asdasd"),
+//                List.of(order));
+//
+//
+//        ArrayList<Invoice> lista = new ArrayList<>();
+//
+//        lista.add(invoice);
+//        given(invoiceRepository.findAllById()).willReturn(lista);
+//        given(invoiceItemRepository.findById(eq(order.getInvoiceItem().getId()))).willReturn(Optional.of(item));
+//    }
     @Test
     public void test_getInvoice() throws Exception {
         InvoiceItem item = new InvoiceItem(1, "myszka");
@@ -90,7 +104,6 @@ public class Test111 {
 
     @Test
     public void test_createInvoice() throws Exception {
-
         InvoiceItemDtoAddInvoice itemDto = new InvoiceItemDtoAddInvoice(1, 2, new BigDecimal("20"));
         InvoiceItem item = new InvoiceItem(1,"test");
         Supplier supplier = new Supplier(1,"pawel","sadowa");

@@ -11,8 +11,7 @@ import java.util.List;
 public class Invoice {
     @Id
     @Column(name = "invoiceNo")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long invoiceNo;
+    private Long invoiceNo;
 
     @Column(name = "creationDate")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-DD")
@@ -27,16 +26,19 @@ public class Invoice {
     private List<Order> orders;
 
 
+    public Invoice(Supplier supplier) {
+        this.supplier = supplier;
+    }
 
     public Invoice(){
     }
-    public Invoice(long invoiceNo, LocalDate creationDate, Supplier supplier){
+    public Invoice(Long invoiceNo, LocalDate creationDate, Supplier supplier){
         this.invoiceNo = invoiceNo;
         this.creationDate = creationDate;
         this.supplier = supplier;
     }
 
-    public Invoice(long invoiceNo, LocalDate creationDate, Supplier supplier, List<Order> orders) {
+    public Invoice(Long invoiceNo, LocalDate creationDate, Supplier supplier, List<Order> orders) {
         this.invoiceNo = invoiceNo;
         this.creationDate = creationDate;
         this.supplier = supplier;
@@ -51,11 +53,11 @@ public class Invoice {
         this.orders = orders;
     }
 
-    public long getInvoiceNo() {
+    public Long getInvoiceNo() {
         return invoiceNo;
     }
 
-    public void setInvoiceNo(long invoiceNo) {
+    public void setInvoiceNo(Long invoiceNo) {
         this.invoiceNo = invoiceNo;
     }
 
