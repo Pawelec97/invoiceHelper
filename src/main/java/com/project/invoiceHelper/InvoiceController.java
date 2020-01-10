@@ -7,6 +7,7 @@ import com.project.invoiceHelper.repositories.OrderRepository;
 import com.project.invoiceHelper.repositories.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.Query;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,19 +72,30 @@ public class InvoiceController {
                                               @Param("supplierId") Long supplierId,
                                               @Param("startDate") @DateTimeFormat(pattern = "yyyy-MM-DD") LocalDate startDate,
                                               @Param("endDate") @DateTimeFormat(pattern = "yyyy-MM-DD") LocalDate endDate) {
+// ------------------------------- QUERY BY EXAMPLE --------------------------------------------------------------
+//        Optional<Supplier> supplierForEx = Optional.empty();
+//        if (supplierId != null) {
+//            Supplier value = new Supplier();
+//            value.setId(supplierId);
+//            supplierForEx = Optional.of(value);
+//        }
+//        Invoice exampleInvoice = new Invoice();
+//        Example<Invoice> example = Example.of(new Invoice());
+//        if (supplierForEx.isPresent()) example = Example.of(new Invoice(null, null, supplierForEx.get(), null));
+//        List<Invoice> invoices = invoiceRepository.findAll(example);
+        // --------------------------------------------------------------------------------------------------------------------------
+        InvoiceSpecification specification = new InvoiceSpecification();
 
-        Optional<Supplier> supplierForEx = Optional.empty();
-        if (supplierId != null) {
-            Supplier value = new Supplier();
-            value.setId(supplierId);
-            supplierForEx = Optional.of(value);
+        if(supplierId !=null) {
+            specification.add(new SearchCriteria("supplier",new Supplier(supplierId,null,null),SearchOperation.EQUAL));
         }
-        Invoice exampleInvoice = new Invoice();
-        Example<Invoice> example = Example.of(new Invoice());
-        if (supplierForEx.isPresent()) example = Example.of(new Invoice(null, null, supplierForEx.get(), null));
-
-
-        List<Invoice> invoices = invoiceRepository.findAll(example);
+        if(startDate != null && endDate != null) {
+            List<LocalDate> dates = new ArrayList<>();
+            dates.add(startDate);
+            dates.add(endDate);
+            specification.add(new SearchCriteria("creationDate", dates, SearchOperation.BETWEEN));
+        }
+        List<Invoice> invoices = invoiceRepository.findAll(specification);
 //        List<Invoice> invoices = invoiceRepository.findByCreationDateBetween(startDate,endDate, PageRequest.of(page, size)).getContent();
         List<InvoiceWithOrdersDto> invoicesDto = new ArrayList<>();
         for (Invoice invoice : invoices) {
