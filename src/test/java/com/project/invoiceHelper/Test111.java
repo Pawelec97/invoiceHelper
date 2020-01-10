@@ -23,7 +23,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -49,7 +48,7 @@ public class Test111 {
     public void test_getInvoices() throws Exception {
         InvoiceItem item = new InvoiceItem(1, "myszka");
         Order order = new Order(1, new BigDecimal("20"), item);
-        Invoice invoice = new Invoice(1, LocalDate.now(), new Supplier(1, "pasda", "asdasd"),
+        Invoice invoice = new Invoice(1L, LocalDate.now(), new Supplier(1, "pasda", "asdasd"),
                 List.of(order));
 
 
@@ -68,7 +67,7 @@ public class Test111 {
 
     }
 
-//    @Test
+    //    @Test
 //    public void test_getInvoiceById throws Exception {
 //        InvoiceItem item = new InvoiceItem(1, "myszka");
 //        Order order = new Order(1, new BigDecimal("20"), item);
@@ -86,7 +85,7 @@ public class Test111 {
     public void test_getInvoice() throws Exception {
         InvoiceItem item = new InvoiceItem(1, "myszka");
         Order order = new Order(1, new BigDecimal("20"), item);
-        Invoice invoice = new Invoice(1, LocalDate.now(), new Supplier(1, "pasda", "asdasd"),
+        Invoice invoice = new Invoice(1L, LocalDate.now(), new Supplier(1, "pasda", "asdasd"),
                 List.of(order));
 
 
@@ -105,9 +104,9 @@ public class Test111 {
     @Test
     public void test_createInvoice() throws Exception {
         InvoiceItemDtoAddInvoice itemDto = new InvoiceItemDtoAddInvoice(1, 2, new BigDecimal("20"));
-        InvoiceItem item = new InvoiceItem(1,"test");
-        Supplier supplier = new Supplier(1,"pawel","sadowa");
-        InvoiceAddDto invoiceDto = new InvoiceAddDto(1,LocalDate.now(),1,List.of(itemDto));
+        InvoiceItem item = new InvoiceItem(1, "test");
+        Supplier supplier = new Supplier(1, "pawel", "sadowa");
+        InvoiceAddDto invoiceDto = new InvoiceAddDto(1, LocalDate.now(), 1, List.of(itemDto));
 
         given(invoiceItemRepository.findById(eq(itemDto.getId()))).willReturn(Optional.of(item));
         given(supplierRepository.findById(eq(invoiceDto.getSupplier()))).willReturn(Optional.of(supplier));
