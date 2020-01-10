@@ -14,9 +14,7 @@ public class InvoiceItemDtoAddInvoice {
     private BigDecimal price;
 
 
-
     public InvoiceItemDtoAddInvoice() {
-
     }
 
     public InvoiceItemDtoAddInvoice(long id, long quantity, BigDecimal price) {
@@ -50,6 +48,6 @@ public class InvoiceItemDtoAddInvoice {
     }
 
 
-    }
+}
 
 

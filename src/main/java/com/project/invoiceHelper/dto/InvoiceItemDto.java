@@ -1,7 +1,6 @@
 package com.project.invoiceHelper.dto;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 public class InvoiceItemDto {
     private long id;

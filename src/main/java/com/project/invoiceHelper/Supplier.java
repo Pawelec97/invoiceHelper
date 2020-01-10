@@ -21,9 +21,10 @@ public class Supplier {
     private List<Invoice> invoices;
 
 
-    public Supplier(){
+    public Supplier() {
 
     }
+
     public Supplier(long id, String name, String address) {
         this.id = id;
         this.name = name;

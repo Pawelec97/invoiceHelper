@@ -14,16 +14,6 @@ public class InvoiceItem {
     @Column(name = "model")
     private String model;
 
-
-
-//    @ManyToMany
-//    @JoinTable(
-//            name = "orders",
-//            joinColumns = @JoinColumn(name = "invoiceitemid"),
-//            inverseJoinColumns = @JoinColumn(name = "invoiceNo"))
-//    List<Invoice> invoices;
-
-
     public InvoiceItem() {
     }
 
@@ -34,7 +24,6 @@ public class InvoiceItem {
 
     public InvoiceItem(String model) {
         this.model = model;
-
     }
 
 

@@ -18,7 +18,7 @@ public class Invoice {
     private LocalDate creationDate;
 
     @ManyToOne
-    @JoinColumn(name="supplierId")
+    @JoinColumn(name = "supplierId")
     private Supplier supplier;
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
@@ -30,9 +30,10 @@ public class Invoice {
         this.supplier = supplier;
     }
 
-    public Invoice(){
+    public Invoice() {
     }
-    public Invoice(Long invoiceNo, LocalDate creationDate, Supplier supplier){
+
+    public Invoice(Long invoiceNo, LocalDate creationDate, Supplier supplier) {
         this.invoiceNo = invoiceNo;
         this.creationDate = creationDate;
         this.supplier = supplier;

@@ -8,9 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface SupplierRepository extends JpaRepository<Supplier, Long>{
+public interface SupplierRepository extends JpaRepository<Supplier, Long> {
 
     Optional<Supplier> findById(Long id);
+
     List<Supplier> findAll();
 }
 

@@ -1,16 +1,13 @@
 package com.project.invoiceHelper.dto;
 
-import com.project.invoiceHelper.dto.InvoiceItemDto;
-import com.project.invoiceHelper.dto.SupplierDto;
 import io.swagger.annotations.ApiModelProperty;
-import org.springframework.data.annotation.Reference;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class InvoiceWithOrdersDto {
 
-    @ApiModelProperty(example = "1" , value = "unique invoice number" )
+    @ApiModelProperty(example = "1", value = "unique invoice number")
     private long invoiceNo;
     @ApiModelProperty(example = "2011-10-05")
     private LocalDate creationDate;
@@ -55,7 +52,5 @@ public class InvoiceWithOrdersDto {
     public void setSupplier(SupplierDto supplierDto) {
         this.supplier = supplierDto;
     }
-
-
 }
 

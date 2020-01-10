@@ -5,8 +5,6 @@ import com.project.invoiceHelper.repositories.InvoiceItemRepository;
 import com.project.invoiceHelper.repositories.InvoiceRepository;
 import com.project.invoiceHelper.repositories.OrderRepository;
 import com.project.invoiceHelper.repositories.SupplierRepository;
-import io.swagger.models.auth.In;
-import jdk.internal.jline.internal.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.repository.query.Param;
@@ -14,14 +12,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.interceptor.TransactionProxyFactoryBean;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -135,17 +129,14 @@ public class InvoiceController {
         }
 
         List<Order> orders = new ArrayList<>();
-        for (InvoiceItemDtoAddInvoice invoiceItemDto : invoiceDto.getItems()) { //dla każdego podanego itemu
+        for (InvoiceItemDtoAddInvoice invoiceItemDto : invoiceDto.getItems()) {
             Optional<InvoiceItem> item = invoiceItemRepository.findById(invoiceItemDto.getId());
             if (item.isPresent()) {
-                orders.add(new Order(invoiceItemDto.getQuantity(), invoiceItemDto.getPrice(), item.get())); //tworze zamowienie bez podanej faktury
+                orders.add(new Order(invoiceItemDto.getQuantity(), invoiceItemDto.getPrice(), item.get()));
             } else
                 return new ResponseEntity<>("this itemID isnt exist", HttpStatus.CONFLICT);
         }
 
-
-//         Optional<List<Order>> orders= invoiceItemRepository.findAll().stream()
-//                .filter(e -> invoiceDto.getInvoiceItemIds().)
 
         Optional<Supplier> supplier = supplierRepository.findById(invoiceDto.getSupplier());
 

@@ -5,6 +5,7 @@ import org.hibernate.annotations.Generated;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -29,9 +30,8 @@ public class Order {
     private Invoice invoice;
 
 
-    public Order (){
+    public Order() {
     }
-
 
 
     public Order(long quantity, BigDecimal price, InvoiceItem invoiceItem) {
