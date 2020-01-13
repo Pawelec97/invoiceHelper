@@ -40,9 +40,15 @@ public class InvoiceSpecification implements Specification<Invoice> {
 			} else if (criteria.getOperation().equals(SearchOperation.GREATER_THAN_EQUAL)) {
 				predicates.add(builder.greaterThanOrEqualTo(
 						root.get(criteria.getKey()), criteria.getValue().toString()));
+			} else if (criteria.getOperation().equals(SearchOperation.GREATER_THAN_EQUAL_LOCALDATE)) {
+				predicates.add(builder.greaterThanOrEqualTo(
+						root.get(criteria.getKey()), (LocalDate) criteria.getValue()));
 			} else if (criteria.getOperation().equals(SearchOperation.LESS_THAN_EQUAL)) {
 				predicates.add(builder.lessThanOrEqualTo(
 						root.get(criteria.getKey()), criteria.getValue().toString()));
+			} else if (criteria.getOperation().equals(SearchOperation.LESS_THAN_EQUAL_LOCALDATE)) {
+				predicates.add(builder.lessThanOrEqualTo(
+						root.get(criteria.getKey()), (LocalDate) criteria.getValue()));
 			} else if (criteria.getOperation().equals(SearchOperation.NOT_EQUAL)) {
 				predicates.add(builder.notEqual(
 						root.get(criteria.getKey()), criteria.getValue()));

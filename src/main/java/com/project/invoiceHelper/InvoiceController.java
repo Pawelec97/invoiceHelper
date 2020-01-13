@@ -98,7 +98,9 @@ public class InvoiceController {
 			List<LocalDate> dates = new ArrayList<>();
 			dates.add(startDate);
 			dates.add(endDate);
-			specification.add(new SearchCriteria("creationDate", dates, SearchOperation.BETWEEN));
+		//	specification.add(new SearchCriteria("creationDate", dates, SearchOperation.BETWEEN));
+			specification.add(new SearchCriteria("creationDate", startDate, SearchOperation.GREATER_THAN_EQUAL_LOCALDATE));
+			specification.add(new SearchCriteria("creationDate", endDate, SearchOperation.LESS_THAN_EQUAL_LOCALDATE));
 		}
 		List<Invoice> invoices = invoiceRepository.findAll(specification);
 

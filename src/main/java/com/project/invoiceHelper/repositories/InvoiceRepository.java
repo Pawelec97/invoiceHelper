@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 public interface InvoiceRepository extends JpaRepository<Invoice, Long>,
-		QueryByExampleExecutor<Invoice>, JpaSpecificationExecutor {
+		QueryByExampleExecutor<Invoice>, JpaSpecificationExecutor<Invoice> {
 
 	List<Invoice> findByInvoiceNo(Long InvoiceNo);
 
