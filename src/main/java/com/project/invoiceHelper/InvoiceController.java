@@ -94,12 +94,10 @@ public class InvoiceController {
 			specification.add(new SearchCriteria("supplier", new Supplier(supplierId, null, null),
 					SearchOperation.EQUAL));
 		}
-		if (startDate != null && endDate != null) {
-			List<LocalDate> dates = new ArrayList<>();
-			dates.add(startDate);
-			dates.add(endDate);
-		//	specification.add(new SearchCriteria("creationDate", dates, SearchOperation.BETWEEN));
+		if (startDate != null) {
 			specification.add(new SearchCriteria("creationDate", startDate, SearchOperation.GREATER_THAN_EQUAL_LOCALDATE));
+		}
+		if (endDate != null) {
 			specification.add(new SearchCriteria("creationDate", endDate, SearchOperation.LESS_THAN_EQUAL_LOCALDATE));
 		}
 		List<Invoice> invoices = invoiceRepository.findAll(specification);
@@ -109,7 +107,7 @@ public class InvoiceController {
 			List<InvoiceItemDto> itemsDto = new ArrayList<>();
 			for (Order order : invoice.getOrders()) {
 				Optional<InvoiceItem> itemOptional = invoiceItemRepository
-						.findById(order.getInvoiceItem().getId()); // szukam
+						.findById(order.getInvoiceItem().getId());
 				if (itemOptional.isPresent()) {
 					InvoiceItem item = itemOptional.get();
 					itemsDto.add(new InvoiceItemDto(item.getId(), item.getModel(), order.getQuantity(),
