@@ -15,11 +15,9 @@ import com.project.invoiceHelper.repositories.InvoiceItemRepository;
 import com.project.invoiceHelper.repositories.InvoiceRepository;
 import com.project.invoiceHelper.repositories.OrderRepository;
 import com.project.invoiceHelper.repositories.SupplierRepository;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -56,27 +54,17 @@ public class InvoiceController {
 	@GetMapping("/invoicesDetails")
 	public List<InvoiceWithOrdersDto> findAllDetails(@RequestParam("page") int page,
 			@RequestParam("size") int size) {
-		List<Invoice> invoices = invoiceRepository.findAll(PageRequest.of(page,size)).getContent();
+		List<Invoice> invoices = invoiceRepository.findAll(PageRequest.of(page, size)).getContent();
 
 		return invoices.stream()
-				.map(invoice ->
-						new InvoiceWithOrdersDto(invoice.getInvoiceNo(),
-								invoice.getCreationDate(),
-								new SupplierDto(invoice.getSupplier().getId(),
-										invoice.getSupplier().getName(),
-										invoice.getSupplier().getAddress()),
-								invoice.getOrders().stream().
-										map(order -> new InvoiceItemDto(order.getInvoiceItem().getId(),
-												order.getInvoiceItem().getModel(),
-												order.getQuantity(), order.getPrice())).
-										collect(Collectors.toList()))
-				).collect(Collectors.toList());
+				.map(this::getInvoiceWithOrdersDto).
+						collect(Collectors.toList());
 	}
 
 	@GetMapping("/invoices")
 	public List<InvoiceCountItemsDto> findAll(@RequestParam("page") int page,
 			@RequestParam("size") int size) {
-		List<Invoice> invoices = invoiceRepository.findAll(PageRequest.of(page,size)).getContent();
+		List<Invoice> invoices = invoiceRepository.findAll(PageRequest.of(page, size)).getContent();
 
 		return invoices.stream()
 				.map(invoice -> new InvoiceCountItemsDto(invoice.getInvoiceNo(),
@@ -99,12 +87,15 @@ public class InvoiceController {
 					SearchOperation.EQUAL));
 		}
 		if (startDate != null) {
-			specification.add(new SearchCriteria("creationDate", startDate, SearchOperation.GREATER_THAN_EQUAL_LOCALDATE));
+			specification.add(new SearchCriteria("creationDate", startDate,
+					SearchOperation.GREATER_THAN_EQUAL_LOCALDATE));
 		}
 		if (endDate != null) {
-			specification.add(new SearchCriteria("creationDate", endDate, SearchOperation.LESS_THAN_EQUAL_LOCALDATE));
+			specification.add(
+					new SearchCriteria("creationDate", endDate, SearchOperation.LESS_THAN_EQUAL_LOCALDATE));
 		}
-		List<Invoice> invoices = invoiceRepository.findAll(specification,PageRequest.of(page,size)).getContent();
+		List<Invoice> invoices = invoiceRepository.findAll(specification, PageRequest.of(page, size))
+				.getContent();
 
 		List<InvoiceWithOrdersDto> invoicesDto = new ArrayList<>();
 		for (Invoice invoice : invoices) {
@@ -130,30 +121,28 @@ public class InvoiceController {
 	@GetMapping("/invoices/{invoiceNo}")
 	public ResponseEntity<InvoiceWithOrdersDto> findOne(@PathVariable("invoiceNo") Long invoiceNo) {
 
-		Optional<Invoice> invoice = invoiceRepository.findById(invoiceNo);
-
-
-		if (invoice.isEmpty()) {
+		Optional<Invoice> invoiceOptional = invoiceRepository.findById(invoiceNo);
+		if (invoiceOptional.isEmpty()) {
 			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
 		}
 
-		Invoice invoice = (invoices.stream().filter(element -> element.getInvoiceNo() == invoiceNo)
-				.findFirst()).get();
-
-		List<InvoiceItemDto> itemsDto = new ArrayList<>();
-		for (Order order : invoice.getOrders()) {
-			itemsDto.add(
-					new InvoiceItemDto(order.getInvoiceItem().getId(), order.getInvoiceItem().getModel(),
-							order.getQuantity(), order.getPrice()));
-		}
-
-		InvoiceWithOrdersDto invoiceDto = new InvoiceWithOrdersDto(invoice.getInvoiceNo(),
-				invoice.getCreationDate(),
-				new SupplierDto(invoice.getSupplier().getId(), invoice.getSupplier().getName(),
-						invoice.getSupplier().getAddress()),
-				itemsDto);
+		InvoiceWithOrdersDto invoiceDto = getInvoiceWithOrdersDto(invoiceOptional.get());
 
 		return new ResponseEntity<>(invoiceDto, HttpStatus.OK);
+	}
+
+	private InvoiceWithOrdersDto getInvoiceWithOrdersDto(Invoice invoice) {
+		return new InvoiceWithOrdersDto(invoice.getInvoiceNo(),
+				invoice.getCreationDate(),
+				new SupplierDto(invoice.getSupplier().getId(),
+						invoice.getSupplier().getName(),
+						invoice.getSupplier().getAddress()),
+				invoice.getOrders().stream().
+						map(order -> new InvoiceItemDto(order.getInvoiceItem().getId(),
+								order.getInvoiceItem().getModel(),
+								order.getQuantity(), order.getPrice())).
+						collect(Collectors.toList())
+		);
 	}
 
 	@PostMapping(path = "/invoices", produces = {MediaType.APPLICATION_XML_VALUE,
