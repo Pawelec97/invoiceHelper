@@ -82,7 +82,6 @@ public class InvoiceController {
 	}
 
 	@GetMapping("/invoicesPages")
-	//TODO zmienić query by example na specification API, bo nie obsluguje between dla dat
 	public List<InvoiceWithOrdersDto> findAll(@RequestParam("page") int page,
 			@RequestParam("size") int size,
 			@Param("supplierId") Long supplierId,
