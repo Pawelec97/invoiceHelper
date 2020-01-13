@@ -10,13 +10,15 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @Configuration
 public class SwaggerConfig {
-    @Bean
-    public Docket api2() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("src")
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.project.invoiceHelper")) //możliwość wybrania pakietu
-                .build();
 
-    }
+	@Bean
+	public Docket api2() {
+		return new Docket(DocumentationType.SWAGGER_2)
+				.groupName("src")
+				.select()
+				.apis(RequestHandlerSelectors
+						.basePackage("com.project.invoiceHelper"))
+				.build();
+
+	}
 }

@@ -6,50 +6,52 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class InvoiceAddDto {
-    @ApiModelProperty(example = "1", value = "unique invoice model")
-    private long invoiceNo;
-    @ApiModelProperty(example = "2014-10-28")
-    private LocalDate creationDate;
-    @ApiModelProperty(example = "2", value = "supplier id")
-    private long supplier;
-    private List<InvoiceItemDtoAddInvoice> items;
 
-    public InvoiceAddDto(long invoiceNo, LocalDate creationDate, long supplier, List<InvoiceItemDtoAddInvoice> items) {
-        this.invoiceNo = invoiceNo;
-        this.creationDate = creationDate;
-        this.supplier = supplier;
-        this.items = items;
-    }
+	@ApiModelProperty(example = "1", value = "unique invoice model")
+	private long invoiceNo;
+	@ApiModelProperty(example = "2014-10-28")
+	private LocalDate creationDate;
+	@ApiModelProperty(example = "2", value = "supplier id")
+	private long supplier;
+	private List<InvoiceItemDtoAddInvoice> items;
 
-    public long getInvoiceNo() {
-        return invoiceNo;
-    }
+	public InvoiceAddDto(long invoiceNo, LocalDate creationDate, long supplier,
+			List<InvoiceItemDtoAddInvoice> items) {
+		this.invoiceNo = invoiceNo;
+		this.creationDate = creationDate;
+		this.supplier = supplier;
+		this.items = items;
+	}
 
-    public void setInvoiceNo(long invoiceNo) {
-        this.invoiceNo = invoiceNo;
-    }
+	public long getInvoiceNo() {
+		return invoiceNo;
+	}
 
-    public LocalDate getCreationDate() {
-        return creationDate;
-    }
+	public void setInvoiceNo(long invoiceNo) {
+		this.invoiceNo = invoiceNo;
+	}
 
-    public void setCreationDate(LocalDate creationDate) {
-        this.creationDate = creationDate;
-    }
+	public LocalDate getCreationDate() {
+		return creationDate;
+	}
 
-    public long getSupplier() {
-        return supplier;
-    }
+	public void setCreationDate(LocalDate creationDate) {
+		this.creationDate = creationDate;
+	}
 
-    public void setSupplier(Long supplier) {
-        this.supplier = supplier;
-    }
+	public long getSupplier() {
+		return supplier;
+	}
 
-    public List<InvoiceItemDtoAddInvoice> getItems() {
-        return items;
-    }
+	public void setSupplier(Long supplier) {
+		this.supplier = supplier;
+	}
 
-    public void setItems(List<InvoiceItemDtoAddInvoice> items) {
-        this.items = items;
-    }
+	public List<InvoiceItemDtoAddInvoice> getItems() {
+		return items;
+	}
+
+	public void setItems(List<InvoiceItemDtoAddInvoice> items) {
+		this.items = items;
+	}
 }
