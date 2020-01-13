@@ -1,5 +1,6 @@
 package com.project.invoiceHelper;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -24,6 +25,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -45,7 +48,7 @@ public class ApiTest {
 	MockMvc mockMvc;
 
 	@Test
-	public void test_getInvoicesFull() throws Exception {
+	public void test_getInvoicesDetailsFull() throws Exception {
 		InvoiceItem item = new InvoiceItem(1L, "myszka");
 		Order order = new Order(4L, new BigDecimal("20"), item);
 		Invoice invoice = new Invoice(1L, LocalDate.of(2010,10,12), new Supplier(2, "Maciej Nowak", "Zlota 35 Gdansk"),
@@ -54,11 +57,12 @@ public class ApiTest {
 		ArrayList<Invoice> lista = new ArrayList<>();
 
 		lista.add(invoice);
-		given(invoiceRepository.findAll()).willReturn(lista);
+
+		given(invoiceRepository.findAll(any(Pageable.class))).willReturn(new PageImpl<Invoice>(lista));
 		given(invoiceItemRepository.findById(eq(order.getInvoiceItem().getId())))
 				.willReturn(Optional.of(item));
 		mockMvc.perform(MockMvcRequestBuilders
-				.get("/invoices")
+				.get("/invoicesDetails?page=0&size=1")
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())
@@ -72,6 +76,29 @@ public class ApiTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].supplier.address", Is.is("Zlota 35 Gdansk")))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].supplier.name", Is.is("Maciej Nowak"))
 				);
+	}
+	@Test
+	public void test_getInvoicesFull() throws Exception {
+		InvoiceItem item = new InvoiceItem(1L, "myszka");
+		Order order = new Order(4L, new BigDecimal("20"), item);
+		Invoice invoice = new Invoice(1L, LocalDate.of(2010,10,12), new Supplier(2, "Maciej Nowak", "Zlota 35 Gdansk"),
+				List.of(order));
+
+		ArrayList<Invoice> lista = new ArrayList<>();
+
+		lista.add(invoice);
+
+		given(invoiceRepository.findAll(any(Pageable.class))).willReturn(new PageImpl<Invoice>(lista));
+
+		mockMvc.perform(MockMvcRequestBuilders
+				.get("/invoices?page=0&size=1")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$[0].invoiceNo", Is.is(1)))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[0].creationDate", Is.is("2010-10-12")))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[0].supplierId", Is.is(2)))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[0].orderCount", Is.is(1)));
 	}
 	@Test
 	public void test_getInvoiceFull() throws Exception {

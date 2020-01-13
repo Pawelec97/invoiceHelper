@@ -10,7 +10,8 @@ import java.util.Optional;
 @Repository
 public interface InvoiceItemRepository extends JpaRepository<InvoiceItem, Long> {
 
-	Optional<InvoiceItem> findById(long id);
+	Optional<InvoiceItem> findById(Long id);
+//	Optional<InvoiceItem> findById(List<Long id);
 
 	List<InvoiceItem> findAll();
 }
