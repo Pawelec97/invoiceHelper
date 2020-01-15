@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 public class InvoiceItemDtoAddInvoice {
 
 	@ApiModelProperty(example = "1", value = "InvoiceItem id")
-	private long id;
+	private long idItem;
 	@ApiModelProperty(example = "5")
 	private long quantity;
 	@ApiModelProperty(example = "20")
@@ -18,8 +18,8 @@ public class InvoiceItemDtoAddInvoice {
 	public InvoiceItemDtoAddInvoice() {
 	}
 
-	public InvoiceItemDtoAddInvoice(long id, long quantity, BigDecimal price) {
-		this.id = id;
+	public InvoiceItemDtoAddInvoice(long idItem, long quantity, BigDecimal price) {
+		this.idItem = idItem;
 		this.quantity = quantity;
 		this.price = price;
 	}
@@ -40,12 +40,12 @@ public class InvoiceItemDtoAddInvoice {
 		this.price = price;
 	}
 
-	public long getId() {
-		return id;
+	public long getIdItem() {
+		return idItem;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setIdItem(long idItem) {
+		this.idItem = idItem;
 	}
 
 

@@ -13,14 +13,13 @@ public class InvoiceAddDto {
 	private LocalDate creationDate;
 	@ApiModelProperty(example = "2", value = "supplier id")
 	private long supplier;
-	private List<InvoiceItemDtoAddInvoice> items;
 
-	public InvoiceAddDto(long invoiceNo, LocalDate creationDate, long supplier,
-			List<InvoiceItemDtoAddInvoice> items) {
+
+	public InvoiceAddDto(long invoiceNo, LocalDate creationDate, long supplier) {
 		this.invoiceNo = invoiceNo;
 		this.creationDate = creationDate;
 		this.supplier = supplier;
-		this.items = items;
+
 	}
 
 	public long getInvoiceNo() {
@@ -47,11 +46,5 @@ public class InvoiceAddDto {
 		this.supplier = supplier;
 	}
 
-	public List<InvoiceItemDtoAddInvoice> getItems() {
-		return items;
-	}
 
-	public void setItems(List<InvoiceItemDtoAddInvoice> items) {
-		this.items = items;
-	}
 }
