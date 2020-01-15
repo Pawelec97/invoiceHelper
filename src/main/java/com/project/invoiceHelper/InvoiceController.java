@@ -51,6 +51,7 @@ public class InvoiceController {
 	public InvoiceController() {
 	}
 
+
 	@GetMapping("/invoicesDetails")
 	public List<InvoiceWithOrdersDto> findAllDetails(@RequestParam("page") int page,
 			@RequestParam("size") int size) {
@@ -123,11 +124,9 @@ public class InvoiceController {
 
 		Optional<Invoice> invoiceOptional = invoiceRepository.findById(invoiceNo);
 		if (invoiceOptional.isEmpty()) {
-			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+			return new ResponseEntity("this invoice doesnt exist", HttpStatus.PRECONDITION_FAILED);
 		}
-
 		InvoiceWithOrdersDto invoiceDto = getInvoiceWithOrdersDto(invoiceOptional.get());
-
 		return new ResponseEntity<>(invoiceDto, HttpStatus.OK);
 	}
 
@@ -150,34 +149,20 @@ public class InvoiceController {
 	public ResponseEntity<String> addInvoice(@RequestBody InvoiceAddDto invoiceDto) {
 		if (invoiceRepository.findById(invoiceDto.getInvoiceNo()).isPresent()) {
 			return new ResponseEntity<>("this InvoiceNo is exist" + invoiceDto.getInvoiceNo(),
-					HttpStatus.CONFLICT);
-		}
-
-		List<Order> orders = new ArrayList<>();
-		for (InvoiceItemDtoAddInvoice invoiceItemDto : invoiceDto.getItems()) {
-			Optional<InvoiceItem> item = invoiceItemRepository.findById(invoiceItemDto.getId());
-			if (item.isPresent()) {
-				orders.add(
-						new Order(invoiceItemDto.getQuantity(), invoiceItemDto.getPrice(), item.get()));
-			} else {
-				return new ResponseEntity<>("this itemID isnt exist", HttpStatus.CONFLICT);
-			}
+					HttpStatus.PRECONDITION_FAILED);
 		}
 
 		Optional<Supplier> supplier = supplierRepository.findById(invoiceDto.getSupplier());
-
-		if (supplier.isPresent()) {
-			Invoice inv = new Invoice(invoiceDto.getInvoiceNo(), invoiceDto.getCreationDate(),
-					supplier.get(), orders);
-			Invoice save = invoiceRepository.save(inv);
-			for (Order o : orders) {
-				o.setInvoice(save);
-				orderRepository.save(o);
-			}
-
-			return new ResponseEntity<>("ok ", HttpStatus.OK);
+		if (supplier.isEmpty()) {
+			return new ResponseEntity<>("Bad Supplier ID", HttpStatus.PRECONDITION_FAILED);
 		}
-		return new ResponseEntity<>("Bad Supplier ID", HttpStatus.CONFLICT);
+
+		Invoice inv = new Invoice(invoiceDto.getInvoiceNo(), invoiceDto.getCreationDate(),
+				supplier.get());
+		invoiceRepository.save(inv);
+
+		return new ResponseEntity<>("ok", HttpStatus.CREATED);
+
 
 	}
 

@@ -14,14 +14,14 @@ import java.util.List;
 
 public class InvoiceSpecification implements Specification<Invoice> {
 
-	private List<SearchCriteria> list;
+	private List<SearchCriteria> criterias;
 
 	public InvoiceSpecification() {
-		this.list = new ArrayList<>();
+		this.criterias = new ArrayList<>();
 	}
 
 	public void add(SearchCriteria criteria) {
-		list.add(criteria);
+		this.criterias.add(criteria);
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class InvoiceSpecification implements Specification<Invoice> {
 
 		List<Predicate> predicates = new ArrayList<>();
 
-		for (SearchCriteria criteria : list) {
+		for (SearchCriteria criteria : criterias) {
 			if (criteria.getOperation().equals(SearchOperation.GREATER_THAN)) {
 				predicates.add(builder.greaterThan(
 						root.get(criteria.getKey()), criteria.getValue().toString()));

@@ -97,7 +97,7 @@ public class Test111 {
 		Supplier supplier = new Supplier(1, "pawel", "sadowa");
 		InvoiceAddDto invoiceDto = new InvoiceAddDto(1, LocalDate.now(), 1, List.of(itemDto));
 
-		given(invoiceItemRepository.findById(eq(itemDto.getId()))).willReturn(Optional.of(item));
+		given(invoiceItemRepository.findById(eq(itemDto.getIdItem()))).willReturn(Optional.of(item));
 		given(supplierRepository.findById(eq(invoiceDto.getSupplier())))
 				.willReturn(Optional.of(supplier));
 		mockMvc.perform(MockMvcRequestBuilders.post("/invoices")
