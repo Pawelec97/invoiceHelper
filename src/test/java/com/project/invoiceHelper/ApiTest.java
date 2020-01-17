@@ -6,6 +6,8 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.project.invoiceHelper.dto.InvoiceAddDto;
+import com.project.invoiceHelper.dto.InvoiceItemDtoAddInvoice;
 import com.project.invoiceHelper.entities.Invoice;
 import com.project.invoiceHelper.entities.InvoiceItem;
 import com.project.invoiceHelper.entities.Order;
@@ -36,6 +38,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(InvoiceController.class)
 public class ApiTest {
+
 	@MockBean
 	InvoiceRepository invoiceRepository;
 	@MockBean
@@ -51,7 +54,8 @@ public class ApiTest {
 	public void test_getInvoicesDetailsFull() throws Exception {
 		InvoiceItem item = new InvoiceItem(1L, "myszka");
 		Order order = new Order(4L, new BigDecimal("20"), item);
-		Invoice invoice = new Invoice(1L, LocalDate.of(2010,10,12), new Supplier(2, "Maciej Nowak", "Zlota 35 Gdansk"),
+		Invoice invoice = new Invoice(1L, LocalDate.of(2010, 10, 12),
+				new Supplier(2, "Maciej Nowak", "Zlota 35 Gdansk"),
 				List.of(order));
 
 		ArrayList<Invoice> lista = new ArrayList<>();
@@ -73,15 +77,21 @@ public class ApiTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].items[0].price", Is.is(20)))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].items[0].quantity", Is.is(4)))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].supplier.id", Is.is(2)))
-				.andExpect(MockMvcResultMatchers.jsonPath("$[0].supplier.address", Is.is("Zlota 35 Gdansk")))
+				.andExpect(
+						MockMvcResultMatchers.jsonPath("$[0].supplier.address", Is.is("Zlota 35 Gdansk")))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].supplier.name", Is.is("Maciej Nowak"))
 				);
 	}
+
+
+
+
 	@Test
 	public void test_getInvoicesFull() throws Exception {
 		InvoiceItem item = new InvoiceItem(1L, "myszka");
 		Order order = new Order(4L, new BigDecimal("20"), item);
-		Invoice invoice = new Invoice(1L, LocalDate.of(2010,10,12), new Supplier(2, "Maciej Nowak", "Zlota 35 Gdansk"),
+		Invoice invoice = new Invoice(1L, LocalDate.of(2010, 10, 12),
+				new Supplier(2, "Maciej Nowak", "Zlota 35 Gdansk"),
 				List.of(order));
 
 		ArrayList<Invoice> lista = new ArrayList<>();
@@ -100,22 +110,102 @@ public class ApiTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].supplierId", Is.is(2)))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].orderCount", Is.is(1)));
 	}
+
 	@Test
 	public void test_getInvoiceFull() throws Exception {
 		InvoiceItem item = new InvoiceItem(1L, "myszka");
 		Order order = new Order(4L, new BigDecimal("20"), item);
-		Invoice invoice = new Invoice(1L, LocalDate.now(), new Supplier(1, "pasda", "asdasd"),
+		Invoice invoice = new Invoice(1L, LocalDate.of(2010, 10, 12),
+				new Supplier(2, "Maciej Nowak", "Zlota 35 Gdansk"),
 				List.of(order));
 
-		ArrayList<Invoice> lista = new ArrayList<>();
-		given(invoiceRepository.findAll()).willReturn(lista);
-
-		lista.add(invoice);
+		given(invoiceRepository.findById(any())).willReturn(Optional.of(invoice));
 
 		mockMvc.perform(MockMvcRequestBuilders
 				.get("/invoices/{invoiceNo}", 1).accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())
-				.andExpect(MockMvcResultMatchers.jsonPath("$.invoiceNo").value(1));
+				.andExpect(MockMvcResultMatchers.jsonPath("$.invoiceNo", Is.is(1)))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.creationDate", Is.is("2010-10-12")))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.items[0].id", Is.is(1)))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.items[0].model", Is.is("myszka")))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.items[0].price", Is.is(20)))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.items[0].quantity", Is.is(4)))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.supplier.id", Is.is(2)))
+				.andExpect(
+						MockMvcResultMatchers.jsonPath("$.supplier.address", Is.is("Zlota 35 Gdansk")))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.supplier.name", Is.is("Maciej Nowak"))
+				);
+	}
+
+	@Test
+	public void test_getInvoiceFull_badInvoiceNo() throws Exception {
+		InvoiceItem item = new InvoiceItem(1L, "myszka");
+		Order order = new Order(4L, new BigDecimal("20"), item);
+		Invoice invoice = new Invoice(1L, LocalDate.of(2010, 10, 12),
+				new Supplier(2, "Maciej Nowak", "Zlota 35 Gdansk"),
+				List.of(order));
+
+		given(invoiceRepository.findById(eq(2L))).willReturn(Optional.ofNullable(invoice));
+
+		mockMvc.perform(MockMvcRequestBuilders
+				.get("/invoices/{invoiceNo}", 1).accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andDo(print())
+				.andExpect(status().isPreconditionFailed());
+	}
+
+	@Test
+	public void test_createInvoice() throws Exception {
+
+		given(invoiceRepository.findById(eq(1L))).willReturn(Optional.ofNullable(new Invoice()));
+		given(supplierRepository.findById(eq(2L))).willReturn(Optional.of(new Supplier()));
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/invoices")
+				.content("{\n"
+						+ "  \"creationDate\": \"2014-10-28\",\n"
+						+ "  \"invoiceNo\": 2,\n"
+						+ "  \"supplier\": 2\n"
+						+ "}")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void test_createInvoice_duplicateInvoiceNo() throws Exception {
+
+		given(invoiceRepository.findById(eq(2L))).willReturn(Optional.ofNullable(new Invoice()));
+		given(supplierRepository.findById(eq(2L))).willReturn(Optional.of(new Supplier()));
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/invoices")
+				.content("{\n"
+						+ "  \"creationDate\": \"2014-10-28\",\n"
+						+ "  \"invoiceNo\": 2,\n"
+						+ "  \"supplier\": 2\n"
+						+ "}")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isPreconditionFailed());
+	}
+
+	@Test
+	public void test_createInvoice_noSupplier() throws Exception {
+
+		given(invoiceRepository.findById(eq(1L))).willReturn(Optional.ofNullable(new Invoice()));
+		given(supplierRepository.findById(eq(1L))).willReturn(Optional.of(new Supplier()));
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/invoices")
+				.content("{\n"
+						+ "  \"creationDate\": \"2014-10-28\",\n"
+						+ "  \"invoiceNo\": 2,\n"
+						+ "  \"supplier\": 2\n"
+						+ "}")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isPreconditionFailed());
 	}
 }

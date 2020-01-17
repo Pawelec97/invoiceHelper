@@ -93,9 +93,9 @@ public class Test111 {
 	@Test
 	public void test_createInvoice() throws Exception {
 		InvoiceItemDtoAddInvoice itemDto = new InvoiceItemDtoAddInvoice(1, 2, new BigDecimal("20"));
-		InvoiceItem item = new InvoiceItem(1, "test");
-		Supplier supplier = new Supplier(1, "pawel", "sadowa");
-		InvoiceAddDto invoiceDto = new InvoiceAddDto(1, LocalDate.now(), 1, List.of(itemDto));
+		InvoiceItem item = new InvoiceItem(1L, "test");
+		Supplier supplier = new Supplier(1L, "pawel", "sadowa");
+		InvoiceAddDto invoiceDto = new InvoiceAddDto(1L, LocalDate.now(), 1);
 
 		given(invoiceItemRepository.findById(eq(itemDto.getIdItem()))).willReturn(Optional.of(item));
 		given(supplierRepository.findById(eq(invoiceDto.getSupplier())))
