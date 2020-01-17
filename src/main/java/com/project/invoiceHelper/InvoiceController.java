@@ -98,25 +98,9 @@ public class InvoiceController {
 		List<Invoice> invoices = invoiceRepository.findAll(specification, PageRequest.of(page, size))
 				.getContent();
 
-		List<InvoiceWithOrdersDto> invoicesDto = new ArrayList<>();
-		for (Invoice invoice : invoices) {
-			List<InvoiceItemDto> itemsDto = new ArrayList<>();
-			for (Order order : invoice.getOrders()) {
-				Optional<InvoiceItem> itemOptional = invoiceItemRepository
-						.findById(order.getInvoiceItem().getId());
-				if (itemOptional.isPresent()) {
-					InvoiceItem item = itemOptional.get();
-					itemsDto.add(new InvoiceItemDto(item.getId(), item.getModel(), order.getQuantity(),
-							order.getPrice()));
-				}
-			}
-
-			invoicesDto.add(new InvoiceWithOrdersDto(invoice.getInvoiceNo(), invoice.getCreationDate(),
-					new SupplierDto(invoice.getSupplier().getId(), invoice.getSupplier().getName(),
-							invoice.getSupplier().getAddress()),
-					itemsDto));
-		}
-		return invoicesDto;
+		return invoices.stream()
+				.map(this::getInvoiceWithOrdersDto).
+						collect(Collectors.toList());
 	}
 
 	@GetMapping("/invoices/{invoiceNo}")
