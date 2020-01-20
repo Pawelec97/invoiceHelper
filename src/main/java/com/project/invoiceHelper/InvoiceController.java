@@ -95,8 +95,8 @@ public class InvoiceController {
 				.getContent();
 
 		return invoices.stream()
-				.map(this::getInvoiceWithOrdersDto).
-						collect(Collectors.toList());
+				.map(this::getInvoiceWithOrdersDto)
+				.collect(Collectors.toList());
 	}
 
 	@GetMapping("/invoices/{invoiceNo}")
